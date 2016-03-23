@@ -12,11 +12,11 @@ ipmitool -I lan -H 192.168.1.1 -U USERID -P PASSW0RD sdr
 
 - ipmi_sensor:
 
-    * Tags: `server`,`host`
+    * Tags: `name`, `server`, `units`
     * Fields:
       - status
       - value
-	
+
 ## Configuration
 
 ```toml
@@ -31,20 +31,12 @@ ipmitool -I lan -H 192.168.1.1 -U USERID -P PASSW0RD sdr
 
 ## Output
 
-> ipmi_sensor,host=10.20.2.203,inst=Ambient\ Temp status=1i,value=20 1458488465012559455
-> ipmi_sensor,host=10.20.2.203,inst=Altitude status=1i,value=80 1458488465012688613
-> ipmi_sensor,host=10.20.2.203,inst=Avg\ Power status=1i,value=220 1458488465012776511
-> ipmi_sensor,host=10.20.2.203,inst=Planar\ 3.3V status=1i,value=3.28 1458488465012861875
-> ipmi_sensor,host=10.20.2.203,inst=Planar\ 5V status=1i,value=4.9 1458488465012944188
-> ipmi_sensor,host=10.20.2.203,inst=Planar\ 12V status=1i,value=12.04 1458488465013008485
-> ipmi_sensor,host=10.20.2.203,inst=Planar\ VBAT status=1i,value=3.04 1458488465013072508
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 1A\ Tach status=1i,value=2610 1458488465013137932
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 1B\ Tach status=1i,value=1775 1458488465013279896
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 2A\ Tach status=1i,value=1972 1458488465013358177
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 2B\ Tach status=1i,value=1275 1458488465013434023
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 3A\ Tach status=1i,value=2929 1458488465013514567
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 3B\ Tach status=1i,value=2125 1458488465013582616
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 1 status=1i,value=0 1458488465013643746
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 2 status=1i,value=0 1458488465013714887
-> ipmi_sensor,host=10.20.2.203,inst=Fan\ 3 status=1i,value=0 1458488465013861854
-
+```
+> ipmi_sensor,server=10.20.2.203,units=degrees_c,name=ambient_temp status=1i,value=20 1458488465012559455
+> ipmi_sensor,server=10.20.2.203,units=feet,name=altitude status=1i,value=80 1458488465012688613
+> ipmi_sensor,server=10.20.2.203,units=watts,name=avg_power status=1i,value=220 1458488465012776511
+> ipmi_sensor,server=10.20.2.203,units=volts,name=planar_3.3v status=1i,value=3.28 1458488465012861875
+> ipmi_sensor,server=10.20.2.203,units=volts,name=planar_vbat status=1i,value=3.04 1458488465013072508
+> ipmi_sensor,server=10.20.2.203,units=rpm,name=fan_1a_tach status=1i,value=2610 1458488465013137932
+> ipmi_sensor,server=10.20.2.203,units=rpm,name=fan_1b_tach status=1i,value=1775 1458488465013279896
+```
