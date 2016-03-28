@@ -89,7 +89,7 @@ func buildTags(metric telegraf.Metric) string {
 	for i, k := range keys {
 		tag_value := tags[k]
 		for _, should_escape := range chars_to_escape {
-			tag_value = strings.Replace(tag_value, should_escape, "_", -1)
+			tag_value = strings.Replace(strings.TrimLeft(tag_value, "/"), should_escape, "_", -1)
 		}
 		if i == 0 {
 			tag_str += tag_value
