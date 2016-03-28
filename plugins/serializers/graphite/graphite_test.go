@@ -31,13 +31,13 @@ func TestGraphiteTags(t *testing.T) {
 		time.Date(2010, time.November, 10, 23, 0, 0, 0, time.UTC),
 	)
 
-	tags1 := buildTags(m1)
+	tags1 := buildTags(m1, )
 	tags2 := buildTags(m2)
 	tags3 := buildTags(m3)
 
-	assert.Equal(t, "192_168_0_1", tags1)
-	assert.Equal(t, "192_168_0_1.first.second", tags2)
-	assert.Equal(t, "first.second", tags3)
+	assert.Equal(t, "192_168_0_1." + m1.Name(), tags1)
+	assert.Equal(t, "192_168_0_1." + m2.Name() + ".first.second", tags2)
+	assert.Equal(t, m3.Name() + ".first.second", tags3)
 }
 
 func TestSerializeMetricNoHost(t *testing.T) {
@@ -58,8 +58,8 @@ func TestSerializeMetricNoHost(t *testing.T) {
 	assert.NoError(t, err)
 
 	expS := []string{
-		fmt.Sprintf("cpu0.us-west-2.cpu.usage_idle 91.5 %d", now.Unix()),
-		fmt.Sprintf("cpu0.us-west-2.cpu.usage_busy 8.5 %d", now.Unix()),
+		fmt.Sprintf("cpu.cpu0.us-west-2.usage_idle 91.5 %d", now.Unix()),
+		fmt.Sprintf("cpu.cpu0.us-west-2.usage_busy 8.5 %d", now.Unix()),
 	}
 	sort.Strings(mS)
 	sort.Strings(expS)
@@ -85,8 +85,8 @@ func TestSerializeMetricHost(t *testing.T) {
 	assert.NoError(t, err)
 
 	expS := []string{
-		fmt.Sprintf("localhost.cpu0.us-west-2.cpu.usage_idle 91.5 %d", now.Unix()),
-		fmt.Sprintf("localhost.cpu0.us-west-2.cpu.usage_busy 8.5 %d", now.Unix()),
+		fmt.Sprintf("localhost.cpu.cpu0.us-west-2.usage_idle 91.5 %d", now.Unix()),
+		fmt.Sprintf("localhost.cpu.cpu0.us-west-2.usage_busy 8.5 %d", now.Unix()),
 	}
 	sort.Strings(mS)
 	sort.Strings(expS)
@@ -112,8 +112,8 @@ func TestSerializeMetricPrefix(t *testing.T) {
 	assert.NoError(t, err)
 
 	expS := []string{
-		fmt.Sprintf("prefix.localhost.cpu0.us-west-2.cpu.usage_idle 91.5 %d", now.Unix()),
-		fmt.Sprintf("prefix.localhost.cpu0.us-west-2.cpu.usage_busy 8.5 %d", now.Unix()),
+		fmt.Sprintf("prefix.localhost.cpu.cpu0.us-west-2.usage_idle 91.5 %d", now.Unix()),
+		fmt.Sprintf("prefix.localhost.cpu.cpu0.us-west-2.usage_busy 8.5 %d", now.Unix()),
 	}
 	sort.Strings(mS)
 	sort.Strings(expS)
@@ -135,7 +135,7 @@ func TestSerializeBucketNameNoHost(t *testing.T) {
 	s := GraphiteSerializer{}
 	mS := s.SerializeBucketName(m, "usage_idle")
 
-	expS := fmt.Sprintf("cpu0.us-west-2.cpu.usage_idle")
+	expS := fmt.Sprintf("cpu.cpu0.us-west-2.usage_idle")
 	assert.Equal(t, expS, mS)
 }
 
@@ -155,7 +155,7 @@ func TestSerializeBucketNameHost(t *testing.T) {
 	s := GraphiteSerializer{}
 	mS := s.SerializeBucketName(m, "usage_idle")
 
-	expS := fmt.Sprintf("localhost.cpu0.us-west-2.cpu.usage_idle")
+	expS := fmt.Sprintf("localhost.cpu.cpu0.us-west-2.usage_idle")
 	assert.Equal(t, expS, mS)
 }
 
@@ -175,6 +175,6 @@ func TestSerializeBucketNamePrefix(t *testing.T) {
 	s := GraphiteSerializer{Prefix: "prefix"}
 	mS := s.SerializeBucketName(m, "usage_idle")
 
-	expS := fmt.Sprintf("prefix.localhost.cpu0.us-west-2.cpu.usage_idle")
+	expS := fmt.Sprintf("prefix.localhost.cpu.cpu0.us-west-2.usage_idle")
 	assert.Equal(t, expS, mS)
 }

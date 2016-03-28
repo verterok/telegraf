@@ -42,13 +42,11 @@ func (s *GraphiteSerializer) SerializeBucketName(metric telegraf.Metric, field_n
 	// Write graphite metric
 	var serializedBucketName string
 	if name == field_name {
+		serializedBucketName = fmt.Sprintf("%s", tag_str)
+
+	} else {
 		serializedBucketName = fmt.Sprintf("%s.%s",
 			tag_str,
-			strings.Replace(name, ".", "_", -1))
-	} else {
-		serializedBucketName = fmt.Sprintf("%s.%s.%s",
-			tag_str,
-			strings.Replace(name, ".", "_", -1),
 			strings.Replace(field_name, ".", "_", -1))
 	}
 	if s.Prefix != "" {
@@ -69,16 +67,30 @@ func buildTags(metric telegraf.Metric) string {
 	sort.Strings(keys)
 
 	var tag_str string
+    name := strings.Replace(metric.Name(), ".", "_", -1)
 	if host, ok := tags["host"]; ok {
 		if len(keys) > 0 {
-			tag_str = strings.Replace(host, ".", "_", -1) + "."
+			tag_str = strings.Replace(host, ".", "_", -1) + "." + name + "."
 		} else {
-			tag_str = strings.Replace(host, ".", "_", -1)
+			tag_str = strings.Replace(host, ".", "_", -1) + "." + name
 		}
-	}
+	} else {
+		if len(keys) > 0 {
+			tag_str = name + "."
+		} else {
+			tag_str = name
+		}
+    }
+
+
+    // escape ., / and " "
+	chars_to_escape := []string{".", "/", " "}
 
 	for i, k := range keys {
-		tag_value := strings.Replace(tags[k], ".", "_", -1)
+		tag_value := tags[k]
+		for _, should_escape := range chars_to_escape {
+			tag_value = strings.Replace(tag_value, should_escape, "_", -1)
+		}
 		if i == 0 {
 			tag_str += tag_value
 		} else {
