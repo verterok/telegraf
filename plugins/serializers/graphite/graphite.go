@@ -67,7 +67,7 @@ func buildTags(metric telegraf.Metric) string {
 	sort.Strings(keys)
 
 	var tag_str string
-    name := strings.Replace(metric.Name(), ".", "_", -1)
+	name := strings.Replace(metric.Name(), ".", "_", -1)
 	if host, ok := tags["host"]; ok {
 		if len(keys) > 0 {
 			tag_str = strings.Replace(host, ".", "_", -1) + "." + name + "."
@@ -80,16 +80,16 @@ func buildTags(metric telegraf.Metric) string {
 		} else {
 			tag_str = name
 		}
-    }
+	}
 
-
-    // escape ., / and " "
+	// escape ., / and " "
 	chars_to_escape := []string{".", "/", " "}
 
 	for i, k := range keys {
 		tag_value := tags[k]
 		for _, should_escape := range chars_to_escape {
-			tag_value = strings.Replace(strings.TrimLeft(tag_value, "/"), should_escape, "_", -1)
+			tag_value = strings.Replace(tag_value, should_escape, "_", -1)
+			tag_value = strings.TrimLeft(tag_value, "_")
 		}
 		if i == 0 {
 			tag_str += tag_value
