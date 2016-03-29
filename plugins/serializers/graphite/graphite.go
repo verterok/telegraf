@@ -12,6 +12,8 @@ type GraphiteSerializer struct {
 	Prefix string
 }
 
+var sanitizedChars = strings.NewReplacer("/", "-", "@", "-", " ", "_")
+
 func (s *GraphiteSerializer) Serialize(metric telegraf.Metric) ([]string, error) {
 	out := []string{}
 
@@ -97,5 +99,5 @@ func buildTags(metric telegraf.Metric) string {
 			tag_str += "." + tag_value
 		}
 	}
-	return tag_str
+	return sanitizedChars.Replace(tag_str)
 }
